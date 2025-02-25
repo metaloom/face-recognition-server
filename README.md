@@ -12,13 +12,30 @@ A simple FastAPI face recognition server for the [insightface](https://github.co
 podman run \
     --device nvidia.com/gpu=all \
     --shm-size 1g \
-    --name smolvlm-server \
+    --name face-recognition-server \
     -p 8000:8000 \
     --rm \
     metaloom/face-recognition-server:latest
 ```
 
+## Java Client
+
+
+```bash
+String BASE_URL = "http://localhost:8000/api/v1";
+
+FaceDetectionServerClient client = FaceDetectionServerClient.newBuilder()
+  .setBaseURL(BASE_URL).build();
+
+FaceDetectionServerClient client = client();
+JsonObject json = client.detect(MULTIFACE_IMAGE_URL, null);
+```
+
+
+
 ## Spec
+
+`POST /api/v1/detect`
 
 ```json
 {

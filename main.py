@@ -52,7 +52,14 @@ def get_face_embeddings(img):
         logger.info("No faces detected!")
         return None
     
-    return faces
+    face_data = []
+    for face in faces:
+        face_data.append({
+            "embedding": face.embedding.tolist(),
+            "bbox": face.bbox.tolist()
+        })
+
+    return face_data
 
 
 def decode_image(base64_image_data):
@@ -77,9 +84,13 @@ async def detect(item: Request):
         image = download_image(item.image_url)
 
     faces = get_face_embeddings(image)
-    print(type(faces[0].embedding))
-    msg = {"faces": faces[0].embedding.tolist()}
 
+    #if faces:
+    #    embeddings = [face.embedding.tolist() for face in faces]
+    #else:
+    #    embeddings = []
+
+    msg = {"faces": faces}
     return JSONResponse(content=msg, status_code=200)
 
 
