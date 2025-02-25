@@ -13,6 +13,7 @@ podman run \
     --device nvidia.com/gpu=all \
     --shm-size 1g \
     --name face-recognition-server \
+    -v /extra/cache/insightface:/root/.insightface/ \
     -p 8000:8000 \
     --rm \
     metaloom/face-recognition-server:latest
