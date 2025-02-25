@@ -60,7 +60,7 @@ def decode_image(base64_image_data):
     image_data = base64.b64decode(base64_image_data)
     return Image.open(BytesIO(image_data))
 
-@app.post("/detect")
+@app.post("/api/v1/detect")
 async def detect(item: Request):
 
     if item.image_data and item.image_url:
