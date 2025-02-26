@@ -39,9 +39,19 @@ def download_image(url):
     else:
         raise ValueError("Failed to download image")
 
-def download_image2(url):
-    response = requests.get(url)
-    img = Image.open(BytesIO(response.content))
+
+def decode_base64_to_image(base64_string: str) -> np.ndarray:
+    image_data = base64.b64decode(base64_string)
+    np_arr = np.frombuffer(image_data, np.uint8)
+    image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+    return image
+
+
+
+def decode_image(base64_image_data):
+    logger.info("Loading image from base64 data")
+    image_data = base64.b64decode(base64_image_data)
+    return Image.open(BytesIO(image_data))
 
 def get_face_embeddings(img):
        
@@ -62,11 +72,6 @@ def get_face_embeddings(img):
     return face_data
 
 
-def decode_image(base64_image_data):
-    logger.info("Loading image from base64 data")
-    image_data = base64.b64decode(base64_image_data)
-    return Image.open(BytesIO(image_data))
-
 @app.post("/api/v1/detect")
 async def detect(item: Request):
 
@@ -78,17 +83,11 @@ async def detect(item: Request):
 
     image = None
     if item.image_data:
-        image = decode_image(item.image_data)
+        image = decode_base64_to_image(item.image_data)
     elif item.image_url:
-        # Load the image via URL
         image = download_image(item.image_url)
 
     faces = get_face_embeddings(image)
-
-    #if faces:
-    #    embeddings = [face.embedding.tolist() for face in faces]
-    #else:
-    #    embeddings = []
 
     msg = {"faces": faces}
     return JSONResponse(content=msg, status_code=200)

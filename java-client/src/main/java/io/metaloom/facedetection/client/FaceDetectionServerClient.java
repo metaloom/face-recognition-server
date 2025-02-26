@@ -8,8 +8,10 @@ import io.vertx.core.json.JsonObject;
 
 public interface FaceDetectionServerClient {
 
+	public static final String DEFAULT_BASEURL = "http://localhost:8000/api/v1";
+
 	public static FaceDetectionServerClient newFaceDetectClient() {
-		return newBuilder().build();
+		return newBuilder().setBaseURL(DEFAULT_BASEURL).build();
 	}
 
 	/**
