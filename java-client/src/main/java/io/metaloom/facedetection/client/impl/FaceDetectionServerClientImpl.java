@@ -10,26 +10,37 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.metaloom.facedetection.client.FaceDetectionServerClient;
-import io.vertx.core.json.JsonObject;
+import io.metaloom.facedetection.client.model.DetectionRequest;
+import io.metaloom.facedetection.client.model.DetectionResponse;
 
 public class FaceDetectionServerClientImpl implements FaceDetectionServerClient {
 
+	private static Logger logger = LoggerFactory.getLogger(FaceDetectionServerClientImpl.class);
+
 	private final String baseURL;
+
+	private ObjectMapper mapper = new ObjectMapper();
 
 	protected FaceDetectionServerClientImpl(FaceDetectionServerClient.Builder builder) {
 		this.baseURL = builder.baseURL();
 	}
 
 	@Override
-	public JsonObject detect(String imageURL, String imageData) throws URISyntaxException, IOException, InterruptedException {
-		JsonObject requestJson = new JsonObject();
-		requestJson.put("image_url", imageURL);
-		requestJson.put("image_data", imageData);
-		return invokeRequest(requestJson, "detect");
+	public DetectionResponse detect(String imageURL, String imageData) throws URISyntaxException, IOException, InterruptedException {
+		DetectionRequest request = new DetectionRequest();
+		request.setImageUrl(imageURL);
+		request.setImageData(imageData);
+		String json = invokeRequest(request, "detect");
+		return mapper.readValue(json, DetectionResponse.class);
 	}
 
-	private JsonObject invokeGetRequest(String path) throws URISyntaxException, IOException, InterruptedException {
+	private String invokeGetRequest(String path) throws URISyntaxException, IOException, InterruptedException {
 		String fullURL = baseURL + path;
 		HttpRequest request = HttpRequest.newBuilder()
 			.uri(new URI(fullURL))
@@ -45,33 +56,34 @@ public class FaceDetectionServerClientImpl implements FaceDetectionServerClient 
 			throw new IOException("Failed to handle request. Got code " + code + " from server.");
 		}
 
-		return new JsonObject(response.body());
+		return response.body();
 	}
 
-	private JsonObject invokeRequest(JsonObject requestJson, String path) throws URISyntaxException, IOException, InterruptedException {
+	private <T> String invokeRequest(T requestModel, String path) throws URISyntaxException, IOException, InterruptedException {
 		String fullURL = baseURL + path;
+		String json = mapper.writeValueAsString(requestModel);
 		HttpRequest request = HttpRequest.newBuilder()
 			.uri(new URI(fullURL))
 			.headers("Content-Type", "application/json")
 			.headers("Accept", "application/json")
-			.POST(BodyPublishers.ofString(requestJson.encode()))
+			.POST(BodyPublishers.ofString(json))
 			.build();
 
 		return invokeRequest(request, path);
 	}
 
-	private JsonObject invokeRequest(HttpRequest request, String path) throws URISyntaxException, IOException, InterruptedException {
+	private String invokeRequest(HttpRequest request, String path) throws URISyntaxException, IOException, InterruptedException {
 		HttpResponse<String> response = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofMinutes(5))
 			.build()
 			.send(request, BodyHandlers.ofString());
 		int code = response.statusCode();
 		if (code < 200 || code > 299) {
-			System.err.println(response.body());
+			logger.error("Failed to process request. Got response {}", response.body());
 			throw new IOException("Failed to handle request. Got code " + code + " from server.");
 		}
 
-		return new JsonObject(response.body());
+		return response.body();
 	}
 
 }

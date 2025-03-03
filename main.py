@@ -64,9 +64,15 @@ def get_face_embeddings(img):
     
     face_data = []
     for face in faces:
+        boxData = face.bbox.tolist()
+        box = {}
+        box['startX'] = boxData[0]
+        box['startY'] = boxData[1]
+        box['width'] = boxData[2]
+        box['height'] = boxData[3]
         face_data.append({
             "embedding": face.embedding.tolist(),
-            "bbox": face.bbox.tolist()
+            "box": box
         })
 
     return face_data
@@ -88,7 +94,8 @@ async def detect(item: Request):
         image = download_image(item.image_url)
 
     faces = get_face_embeddings(image)
-
+    if faces is None:
+        faces = []
     msg = {"faces": faces}
     return JSONResponse(content=msg, status_code=200)
 

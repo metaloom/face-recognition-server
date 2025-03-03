@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import io.metaloom.facedetection.client.impl.FaceDetectionServerClientBuilderImpl;
-import io.vertx.core.json.JsonObject;
+import io.metaloom.facedetection.client.model.DetectionResponse;
 
 public interface FaceDetectionServerClient {
 
@@ -49,5 +49,5 @@ public interface FaceDetectionServerClient {
 
 	}
 
-	JsonObject detect(String imageURL, String imageData) throws URISyntaxException, IOException, InterruptedException;
+	DetectionResponse detect(String imageURL, String imageData) throws URISyntaxException, IOException, InterruptedException;
 }
