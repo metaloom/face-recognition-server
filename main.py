@@ -68,8 +68,8 @@ def get_face_embeddings(img):
         box = {}
         box['startX'] = boxData[0]
         box['startY'] = boxData[1]
-        box['width'] = boxData[2]
-        box['height'] = boxData[3]
+        box['width'] = boxData[2]-boxData[0]
+        box['height'] = boxData[3]-boxData[1]
         face_data.append({
             "embedding": face.embedding.tolist(),
             "box": box
