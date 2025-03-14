@@ -49,5 +49,8 @@ public interface FaceDetectionServerClient {
 
 	}
 
-	DetectionResponse detect(String imageURL, String imageData) throws URISyntaxException, IOException, InterruptedException;
+	DetectionResponse detectByImageURL(String imageURL) throws URISyntaxException, IOException, InterruptedException;
+
+	DetectionResponse detectByImageData(String imageData) throws URISyntaxException, IOException, InterruptedException;
+
 }

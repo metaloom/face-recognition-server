@@ -32,7 +32,16 @@ public class FaceDetectionServerClientImpl implements FaceDetectionServerClient 
 	}
 
 	@Override
-	public DetectionResponse detect(String imageURL, String imageData) throws URISyntaxException, IOException, InterruptedException {
+	public DetectionResponse detectByImageData(String imageData) throws URISyntaxException, IOException, InterruptedException {
+		return detect(null, imageData);
+	}
+
+	@Override
+	public DetectionResponse detectByImageURL(String imageURL) throws URISyntaxException, IOException, InterruptedException {
+		return detect(imageURL, null);
+	}
+
+	private DetectionResponse detect(String imageURL, String imageData) throws URISyntaxException, IOException, InterruptedException {
 		DetectionRequest request = new DetectionRequest();
 		request.setImageUrl(imageURL);
 		request.setImageData(imageData);

@@ -40,7 +40,7 @@ public class FaceDetectionServerClientTest extends AbstractClientTest {
 	@Test
 	public void testMultiFaceURL() throws URISyntaxException, IOException, InterruptedException {
 		FaceDetectionServerClient client = client();
-		DetectionResponse response = client.detect(MULTIFACE_IMAGE_URL, null);
+		DetectionResponse response = client.detectByImageURL(MULTIFACE_IMAGE_URL);
 		assertResponse(response);
 
 		BufferedImage img = ImageIO.read(new File(JPG_IMAGE_PATH));
@@ -70,14 +70,14 @@ public class FaceDetectionServerClientTest extends AbstractClientTest {
 	public void testMultiFaceBase64() throws URISyntaxException, IOException, InterruptedException {
 		FaceDetectionServerClient client = client();
 		String data = FileUtils.readFileToString(new File(BASE_64_IMAGE_PATH), Charset.defaultCharset());
-		DetectionResponse response = client.detect(null, data);
+		DetectionResponse response = client.detectByImageData(data);
 		assertResponse(response);
 	}
 
 	@Test
 	public void testSingleFace() throws URISyntaxException, IOException, InterruptedException {
 		FaceDetectionServerClient client = client();
-		DetectionResponse response = client.detect(SINGLE_FACE_IMAGE_URL, null);
+		DetectionResponse response = client.detectByImageURL(SINGLE_FACE_IMAGE_URL);
 		List<FaceModel> faces = response.getFaces();
 		assertEquals(1, faces.size());
 		System.out.println(faces.size());
@@ -86,7 +86,7 @@ public class FaceDetectionServerClientTest extends AbstractClientTest {
 	@Test
 	public void testNoFace() throws URISyntaxException, IOException, InterruptedException {
 		FaceDetectionServerClient client = client();
-		DetectionResponse response = client.detect(NO_FACE_IMAGE_URL, null);
+		DetectionResponse response = client.detectByImageURL(NO_FACE_IMAGE_URL);
 		List<FaceModel> faces = response.getFaces();
 		assertEquals(0, faces.size());
 		System.out.println(faces.size());
