@@ -37,13 +37,21 @@ public class FaceDetectionServerClientTest extends AbstractClientTest {
 
 	private static final String JPG_IMAGE_PATH = "src/test/resources/images/pexels-photo-3812743.jpeg";
 
+	private static final String JPG_512_IMAGE_PATH = "src/test/resources/images/pexels-photo-3812743_512.jpeg";
+
 	@Test
 	public void testMultiFaceURL() throws URISyntaxException, IOException, InterruptedException {
 		FaceDetectionServerClient client = client();
 		DetectionResponse response = client.detectByImageURL(MULTIFACE_IMAGE_URL);
 		assertResponse(response);
 
-		BufferedImage img = ImageIO.read(new File(JPG_IMAGE_PATH));
+		showFaces(response, JPG_IMAGE_PATH);
+		System.in.read();
+
+	}
+
+	private void showFaces(DetectionResponse response, String imageFile) throws IOException {
+		BufferedImage img = ImageIO.read(new File(imageFile));
 		Graphics g = img.getGraphics();
 		g.setColor(Color.RED);
 		for (FaceModel face : response.getFaces()) {
@@ -54,8 +62,16 @@ public class FaceDetectionServerClientTest extends AbstractClientTest {
 		}
 		g.dispose();
 		show(img);
-		System.in.read();
+	}
 
+	@Test
+	public void testSmallImage() throws IOException, URISyntaxException, InterruptedException {
+		FaceDetectionServerClient client = client();
+		BufferedImage image = ImageIO.read(new File(JPG_512_IMAGE_PATH));
+		String imageData = ImageTestUtils.toBase64JPG(image);
+		DetectionResponse response = client.detectByImageData(imageData);
+		showFaces(response, JPG_512_IMAGE_PATH);
+		System.in.read();
 	}
 
 	private void show(BufferedImage img) {
