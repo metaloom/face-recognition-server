@@ -8,7 +8,7 @@ import io.metaloom.facedetection.client.model.DetectionResponse;
 
 public interface FaceDetectionServerClient {
 
-	public static final String DEFAULT_BASEURL = "http://localhost:8001/api/v1";
+	public static final String DEFAULT_BASEURL = "http://localhost:8000/api/v1";
 
 	public static FaceDetectionServerClient newFaceDetectClient() {
 		return newBuilder().setBaseURL(DEFAULT_BASEURL).build();

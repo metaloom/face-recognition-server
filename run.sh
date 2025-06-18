@@ -6,5 +6,6 @@ podman run \
     --name face-detection-server \
     -p 8000:8000 \
     --rm \
-    -v /opt/cache/huggingface:/root/.cache/huggingface \
-    localhost/metaloom/face-detection-server:latest
+    -v /extra/cache/huggingface:/root/.cache/huggingface \
+    -v /extra/cache/insightface:/root/.insightface \
+    docker.io/metaloom/face-recognition-server:latest
