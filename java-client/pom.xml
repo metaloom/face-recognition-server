@@ -5,11 +5,12 @@
 
     <groupId>io.metaloom.face</groupId>
     <artifactId>face-recognition-server-client</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
 
     <parent>
-        <groupId>io.metaloom.loom</groupId>
-        <artifactId>maven-loom-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <groupId>io.metaloom</groupId>
+        <artifactId>maven-parent</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <name>Face Recognition Server Java Client</name>
@@ -30,6 +31,12 @@
     </licenses>
 
     <dependencies>
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -45,6 +52,11 @@
         -->
 
         <!--Test-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
